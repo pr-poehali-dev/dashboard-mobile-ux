@@ -60,31 +60,60 @@ const Index = () => {
     { id: 'profile' as NavItem, icon: 'User', label: 'Профиль' },
   ];
 
+  const analyticsData = {
+    monthlyTrend: [
+      { month: 'Янв', personnel: 240, tasks: 156, efficiency: 92 },
+      { month: 'Фев', personnel: 248, tasks: 178, efficiency: 89 },
+      { month: 'Мар', personnel: 255, tasks: 192, efficiency: 94 },
+      { month: 'Апр', personnel: 255, tasks: 201, efficiency: 91 },
+    ],
+    departments: [
+      { name: 'Строительство', count: 120, color: '#0EA5E9' },
+      { name: 'Электрика', count: 45, color: '#9b87f5' },
+      { name: 'Сантехника', count: 38, color: '#D946EF' },
+      { name: 'Отделка', count: 52, color: '#8B5CF6' },
+    ],
+    safetyMetrics: [
+      { label: 'Инциденты', value: 2, trend: 'down', color: 'text-accent' },
+      { label: 'Нарушения', value: 5, trend: 'down', color: 'text-destructive' },
+      { label: 'Проверки СИЗ', value: 48, trend: 'up', color: 'text-chart-4' },
+    ],
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 pb-24" style={{ width: '390px', minHeight: '844px', margin: '0 auto' }}>
       <div className="p-4 space-y-4">
         <div className="flex items-center justify-between mb-6 animate-fade-in">
-          <h1 className="text-2xl font-bold text-foreground">Дашборд участка</h1>
+          <h1 className="text-2xl font-bold text-foreground">
+            {activeNav === 'dashboard' && 'Дашборд участка'}
+            {activeNav === 'analytics' && 'Аналитика'}
+            {activeNav === 'staff' && 'Персонал'}
+            {activeNav === 'tasks' && 'Наряды'}
+            {activeNav === 'notifications' && 'Уведомления'}
+            {activeNav === 'profile' && 'Профиль'}
+          </h1>
           <div className="w-10 h-10 rounded-full bg-primary/20 backdrop-blur-sm flex items-center justify-center">
             <Icon name="Menu" size={20} className="text-primary" />
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 animate-scale-in">
-          {stats.map((stat, idx) => (
-            <Card 
-              key={idx} 
-              className="p-4 bg-card/40 backdrop-blur-md border border-white/10 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
-              style={{ animationDelay: `${idx * 0.1}s` }}
-            >
-              <div className={`w-10 h-10 rounded-xl ${stat.color} flex items-center justify-center mb-3`}>
-                <Icon name={stat.icon} size={20} />
-              </div>
-              <div className="text-3xl font-bold text-foreground mb-1">{stat.value}</div>
-              <div className="text-xs text-muted-foreground">{stat.label}</div>
-            </Card>
-          ))}
-        </div>
+        {activeNav === 'dashboard' && (
+          <>
+            <div className="grid grid-cols-2 gap-3 animate-scale-in">
+              {stats.map((stat, idx) => (
+                <Card 
+                  key={idx} 
+                  className="p-4 bg-card/40 backdrop-blur-md border border-white/10 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
+                  style={{ animationDelay: `${idx * 0.1}s` }}
+                >
+                  <div className={`w-10 h-10 rounded-xl ${stat.color} flex items-center justify-center mb-3`}>
+                    <Icon name={stat.icon} size={20} />
+                  </div>
+                  <div className="text-3xl font-bold text-foreground mb-1">{stat.value}</div>
+                  <div className="text-xs text-muted-foreground">{stat.label}</div>
+                </Card>
+              ))}
+            </div>
 
         <Card className="p-5 bg-card/40 backdrop-blur-md border border-white/10 shadow-lg animate-fade-in">
           <h3 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
@@ -184,22 +213,144 @@ const Index = () => {
           </div>
         </Card>
 
-        <Card className="p-5 bg-card/40 backdrop-blur-md border border-white/10 shadow-lg animate-fade-in">
-          <h3 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
-            <Icon name="ClipboardList" size={16} className="text-primary" />
-            Наряды
-          </h3>
-          <div className="flex gap-4 justify-around">
-            {orders.map((order, idx) => (
-              <div key={idx} className="flex flex-col items-center gap-2">
-                <div className={`w-14 h-14 rounded-full ${order.color} flex items-center justify-center text-xl font-bold shadow-lg`}>
-                  {order.id}
-                </div>
-                <span className="text-xs text-muted-foreground text-center">{order.status}</span>
+            <Card className="p-5 bg-card/40 backdrop-blur-md border border-white/10 shadow-lg animate-fade-in">
+              <h3 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
+                <Icon name="ClipboardList" size={16} className="text-primary" />
+                Наряды
+              </h3>
+              <div className="flex gap-4 justify-around">
+                {orders.map((order, idx) => (
+                  <div key={idx} className="flex flex-col items-center gap-2">
+                    <div className={`w-14 h-14 rounded-full ${order.color} flex items-center justify-center text-xl font-bold shadow-lg`}>
+                      {order.id}
+                    </div>
+                    <span className="text-xs text-muted-foreground text-center">{order.status}</span>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </Card>
+            </Card>
+          </>
+        )}
+
+        {activeNav === 'analytics' && (
+          <>
+            <Card className="p-5 bg-card/40 backdrop-blur-md border border-white/10 shadow-lg animate-fade-in">
+              <h3 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
+                <Icon name="TrendingUp" size={16} className="text-primary" />
+                Динамика за 4 месяца
+              </h3>
+              <div className="space-y-4">
+                <div className="flex items-end justify-between h-40 gap-2">
+                  {analyticsData.monthlyTrend.map((item, idx) => (
+                    <div key={idx} className="flex-1 flex flex-col items-center gap-2">
+                      <div className="w-full space-y-1">
+                        <div 
+                          className="w-full rounded-t-lg bg-primary transition-all duration-500 hover:opacity-80"
+                          style={{ height: `${(item.personnel / 255) * 100}px` }}
+                          title={`Персонал: ${item.personnel}`}
+                        />
+                        <div 
+                          className="w-full rounded-t-lg bg-accent transition-all duration-500 hover:opacity-80"
+                          style={{ height: `${(item.tasks / 255) * 80}px` }}
+                          title={`Наряды: ${item.tasks}`}
+                        />
+                      </div>
+                      <span className="text-xs text-muted-foreground font-medium">{item.month}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="flex gap-4 text-xs">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded bg-primary"></div>
+                    <span className="text-muted-foreground">Персонал</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded bg-accent"></div>
+                    <span className="text-muted-foreground">Наряды</span>
+                  </div>
+                </div>
+              </div>
+            </Card>
+
+            <Card className="p-5 bg-card/40 backdrop-blur-md border border-white/10 shadow-lg animate-fade-in">
+              <h3 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
+                <Icon name="Users" size={16} className="text-primary" />
+                Распределение по отделам
+              </h3>
+              <div className="space-y-3">
+                {analyticsData.departments.map((dept, idx) => (
+                  <div key={idx} className="space-y-2">
+                    <div className="flex items-center justify-between text-xs">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: dept.color }}></div>
+                        <span className="text-foreground">{dept.name}</span>
+                      </div>
+                      <span className="text-muted-foreground font-medium">{dept.count} чел.</span>
+                    </div>
+                    <div className="relative h-2 bg-muted/30 rounded-full overflow-hidden">
+                      <div 
+                        className="absolute h-full rounded-full transition-all duration-500"
+                        style={{ width: `${(dept.count / 255) * 100}%`, backgroundColor: dept.color }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+
+            <div className="grid grid-cols-3 gap-3 animate-scale-in">
+              {analyticsData.safetyMetrics.map((metric, idx) => (
+                <Card 
+                  key={idx} 
+                  className="p-4 bg-card/40 backdrop-blur-md border border-white/10 shadow-lg"
+                  style={{ animationDelay: `${idx * 0.1}s` }}
+                >
+                  <div className="flex items-start justify-between mb-2">
+                    <div className={`text-2xl font-bold ${metric.color}`}>{metric.value}</div>
+                    <Icon 
+                      name={metric.trend === 'up' ? 'TrendingUp' : 'TrendingDown'} 
+                      size={16} 
+                      className={metric.trend === 'up' ? 'text-accent' : 'text-destructive'} 
+                    />
+                  </div>
+                  <div className="text-xs text-muted-foreground">{metric.label}</div>
+                </Card>
+              ))}
+            </div>
+
+            <Card className="p-5 bg-card/40 backdrop-blur-md border border-white/10 shadow-lg animate-fade-in">
+              <h3 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
+                <Icon name="Target" size={16} className="text-primary" />
+                Эффективность работы
+              </h3>
+              <div className="space-y-4">
+                {analyticsData.monthlyTrend.map((item, idx) => (
+                  <div key={idx} className="space-y-2">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-foreground">{item.month}</span>
+                      <span className="text-primary font-bold">{item.efficiency}%</span>
+                    </div>
+                    <Progress value={item.efficiency} className="h-2 bg-muted/30" />
+                  </div>
+                ))}
+              </div>
+            </Card>
+          </>
+        )}
+
+        {activeNav !== 'dashboard' && activeNav !== 'analytics' && (
+          <Card className="p-8 bg-card/40 backdrop-blur-md border border-white/10 shadow-lg animate-fade-in text-center">
+            <div className="flex flex-col items-center gap-4">
+              <div className="w-16 h-16 rounded-full bg-muted/30 flex items-center justify-center">
+                <Icon name="Construction" size={32} className="text-muted-foreground" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-foreground mb-2">В разработке</h3>
+                <p className="text-sm text-muted-foreground">Этот раздел скоро появится</p>
+              </div>
+            </div>
+          </Card>
+        )}
       </div>
 
       <nav className="fixed bottom-0 left-0 right-0 max-w-[390px] mx-auto bg-card/60 backdrop-blur-xl border-t border-white/10 shadow-2xl">
